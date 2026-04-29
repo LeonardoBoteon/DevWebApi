@@ -32,6 +32,7 @@ public class ObrasController : ControllerBase
     {
         var obra = await _context.Obras
             .Include(o => o.Categoria)
+            .Include(o => o.DetalheObra)
             .FirstOrDefaultAsync(o => o.Id == id);
         
         if (obra == null)
@@ -67,9 +68,8 @@ public class ObrasController : ControllerBase
         }
 
         obraExistente.Nome = obra.Nome;
-        obraExistente.Ano = obra.Ano;
-        obraExistente.Descricao = obra.Descricao;
         obraExistente.CategoriaId = obra.CategoriaId;
+        obraExistente.Ano = obra.Ano;
 
         await _context.SaveChangesAsync();
 

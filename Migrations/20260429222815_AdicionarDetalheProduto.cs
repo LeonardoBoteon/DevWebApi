@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DevWeb.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AdicionarCategoriaERelacionamento : Migration
+    public partial class AdicionarDetalheProduto : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,8 +32,7 @@ namespace DevWeb.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nome = table.Column<string>(type: "text", nullable: false),
-                    Ano = table.Column<int>(type: "integer", maxLength: 4, nullable: true),
-                    Descricao = table.Column<string>(type: "text", nullable: true),
+                    Ano = table.Column<int>(type: "integer", nullable: true),
                     CategoriaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -47,6 +46,34 @@ namespace DevWeb.Api.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "DetalhesObra",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Descricao = table.Column<string>(type: "text", nullable: true),
+                    Material = table.Column<string>(type: "text", nullable: true),
+                    Tamanho = table.Column<string>(type: "text", nullable: true),
+                    ObraId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DetalhesObra", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DetalhesObra_Obras_ObraId",
+                        column: x => x.ObraId,
+                        principalTable: "Obras",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DetalhesObra_ObraId",
+                table: "DetalhesObra",
+                column: "ObraId",
+                unique: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_Obras_CategoriaId",
                 table: "Obras",
@@ -56,6 +83,9 @@ namespace DevWeb.Api.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "DetalhesObra");
+
             migrationBuilder.DropTable(
                 name: "Obras");
 

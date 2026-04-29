@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DevWeb.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260410003919_AdicionarCategoriaERelacionamento")]
-    partial class AdicionarCategoriaERelacionamento
+    [Migration("20260429222815_AdicionarDetalheProduto")]
+    partial class AdicionarDetalheProduto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,34 @@ namespace DevWeb.Api.Migrations
                     b.ToTable("Categorias");
                 });
 
+            modelBuilder.Entity("DevWeb.Api.Models.DetalheObra", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Material")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ObraId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Tamanho")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObraId")
+                        .IsUnique();
+
+                    b.ToTable("DetalhesObra");
+                });
+
             modelBuilder.Entity("DevWeb.Api.Models.Obra", b =>
                 {
                     b.Property<int>("Id")
@@ -54,14 +82,10 @@ namespace DevWeb.Api.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("Ano")
-                        .HasMaxLength(4)
                         .HasColumnType("integer");
 
                     b.Property<int>("CategoriaId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("text");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -72,6 +96,17 @@ namespace DevWeb.Api.Migrations
                     b.HasIndex("CategoriaId");
 
                     b.ToTable("Obras");
+                });
+
+            modelBuilder.Entity("DevWeb.Api.Models.DetalheObra", b =>
+                {
+                    b.HasOne("DevWeb.Api.Models.Obra", "Obra")
+                        .WithOne("DetalheObra")
+                        .HasForeignKey("DevWeb.Api.Models.DetalheObra", "ObraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Obra");
                 });
 
             modelBuilder.Entity("DevWeb.Api.Models.Obra", b =>
@@ -88,6 +123,11 @@ namespace DevWeb.Api.Migrations
             modelBuilder.Entity("DevWeb.Api.Models.Categoria", b =>
                 {
                     b.Navigation("Obras");
+                });
+
+            modelBuilder.Entity("DevWeb.Api.Models.Obra", b =>
+                {
+                    b.Navigation("DetalheObra");
                 });
 #pragma warning restore 612, 618
         }

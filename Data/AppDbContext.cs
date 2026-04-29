@@ -38,13 +38,24 @@ public class AppDbContext : DbContext
     
     public DbSet<Categoria> Categorias { get; set;}
 
+    public DbSet<DetalheObra> DetalhesObra {get; set;}
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Obra>()
-        .HasOne(p => p.Categoria)
-        .WithMany(c => c.Obras)
-        .HasForeignKey(p => p.CategoriaId)
+            .HasOne(p => p.Categoria)
+            .WithMany(c => c.Obras)
+            .HasForeignKey(p => p.CategoriaId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<DetalheObra>()
+            .HasOne(d => d.Obra)
+            .WithOne(o => o.DetalheObra)
+            .HasForeignKey<DetalheObra>(d => d.ObraId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DetalheObra>()
+            .HasIndex(d => d.ObraId)
+            .IsUnique();
     }
 }

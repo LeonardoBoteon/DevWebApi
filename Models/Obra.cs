@@ -9,12 +9,12 @@ public class Obra
 
     public required string Nome {get; set; }
 
-    public int? Ano {get; set; }
-
-    public string? Descricao {get; set; }
+    public int? Ano {get; set;}
     
-    public int CategoriaId { get; set;}
+    public int CategoriaId {get; set;}
 
     public Categoria? Categoria {get; set;}
+
+    public DetalheObra? DetalheObra {get; set;}
 
 }
