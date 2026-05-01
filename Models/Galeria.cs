@@ -20,7 +20,5 @@ public class Galeria
 
     public required string Endereco {get; set; }
 
-    public required List<Obra> Obras {get; set; }
-
-
+    public ICollection<Obra> Obras {get; set;} = new List<Obra>();
 }

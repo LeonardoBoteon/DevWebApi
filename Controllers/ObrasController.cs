@@ -33,6 +33,8 @@ public class ObrasController : ControllerBase
         var obra = await _context.Obras
             .Include(o => o.Categoria)
             .Include(o => o.DetalheObra)
+            .Include(o => o.Artista)
+            .Include(o => o.Galeria)
             .FirstOrDefaultAsync(o => o.Id == id);
         
         if (obra == null)
@@ -68,8 +70,10 @@ public class ObrasController : ControllerBase
         }
 
         obraExistente.Nome = obra.Nome;
-        obraExistente.CategoriaId = obra.CategoriaId;
         obraExistente.Ano = obra.Ano;
+        obraExistente.CategoriaId = obra.CategoriaId;
+        obraExistente.ArtistaId = obra.ArtistaId;
+        obraExistente.GaleriaId = obra.GaleriaId;
 
         await _context.SaveChangesAsync();
 

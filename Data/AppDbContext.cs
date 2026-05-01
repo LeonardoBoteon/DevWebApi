@@ -40,12 +40,28 @@ public class AppDbContext : DbContext
 
     public DbSet<DetalheObra> DetalhesObra {get; set;}
 
+    public DbSet<Artista> Artistas {get; set;}
+
+    public DbSet<Galeria> Galerias {get; set;}
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Obra>()
-            .HasOne(p => p.Categoria)
+            .HasOne(o => o.Categoria)
             .WithMany(c => c.Obras)
-            .HasForeignKey(p => p.CategoriaId)
+            .HasForeignKey(o => o.CategoriaId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Obra>()
+            .HasOne(o => o.Artista)
+            .WithMany(a => a.Obras)
+            .HasForeignKey(o => o.ArtistaId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Obra>()
+            .HasOne(o => o.Galeria)
+            .WithMany(g => g.Obras)
+            .HasForeignKey(o => o.GaleriaId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<DetalheObra>()

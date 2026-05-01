@@ -6,11 +6,27 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DevWeb.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AdicionarDetalheProduto : Migration
+    public partial class AdicionarArtistaEGaleria : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Artistas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "text", nullable: false),
+                    Ano = table.Column<string>(type: "text", nullable: true),
+                    Pais = table.Column<string>(type: "text", nullable: true),
+                    Descricao = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Artistas", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Categorias",
                 columns: table => new
@@ -26,6 +42,24 @@ namespace DevWeb.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Galerias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "text", nullable: false),
+                    Descricao = table.Column<string>(type: "text", nullable: true),
+                    Telefone = table.Column<string>(type: "text", nullable: true),
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Site = table.Column<string>(type: "text", nullable: true),
+                    Endereco = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Galerias", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Obras",
                 columns: table => new
                 {
@@ -33,15 +67,29 @@ namespace DevWeb.Api.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nome = table.Column<string>(type: "text", nullable: false),
                     Ano = table.Column<int>(type: "integer", nullable: true),
-                    CategoriaId = table.Column<int>(type: "integer", nullable: false)
+                    CategoriaId = table.Column<int>(type: "integer", nullable: false),
+                    ArtistaId = table.Column<int>(type: "integer", nullable: false),
+                    GaleriaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Obras", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Obras_Artistas_ArtistaId",
+                        column: x => x.ArtistaId,
+                        principalTable: "Artistas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Obras_Categorias_CategoriaId",
                         column: x => x.CategoriaId,
                         principalTable: "Categorias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Obras_Galerias_GaleriaId",
+                        column: x => x.GaleriaId,
+                        principalTable: "Galerias",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -75,9 +123,19 @@ namespace DevWeb.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Obras_ArtistaId",
+                table: "Obras",
+                column: "ArtistaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Obras_CategoriaId",
                 table: "Obras",
                 column: "CategoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Obras_GaleriaId",
+                table: "Obras",
+                column: "GaleriaId");
         }
 
         /// <inheritdoc />
@@ -90,7 +148,13 @@ namespace DevWeb.Api.Migrations
                 name: "Obras");
 
             migrationBuilder.DropTable(
+                name: "Artistas");
+
+            migrationBuilder.DropTable(
                 name: "Categorias");
+
+            migrationBuilder.DropTable(
+                name: "Galerias");
         }
     }
 }

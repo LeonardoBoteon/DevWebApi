@@ -22,6 +22,32 @@ namespace DevWeb.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("DevWeb.Api.Models.Artista", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Ano")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Pais")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Artistas");
+                });
+
             modelBuilder.Entity("DevWeb.Api.Models.Categoria", b =>
                 {
                     b.Property<int>("Id")
@@ -70,6 +96,39 @@ namespace DevWeb.Api.Migrations
                     b.ToTable("DetalhesObra");
                 });
 
+            modelBuilder.Entity("DevWeb.Api.Models.Galeria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Site")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telefone")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Galerias");
+                });
+
             modelBuilder.Entity("DevWeb.Api.Models.Obra", b =>
                 {
                     b.Property<int>("Id")
@@ -81,7 +140,13 @@ namespace DevWeb.Api.Migrations
                     b.Property<int?>("Ano")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ArtistaId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("CategoriaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GaleriaId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Nome")
@@ -90,7 +155,11 @@ namespace DevWeb.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArtistaId");
+
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("GaleriaId");
 
                     b.ToTable("Obras");
                 });
@@ -108,16 +177,42 @@ namespace DevWeb.Api.Migrations
 
             modelBuilder.Entity("DevWeb.Api.Models.Obra", b =>
                 {
+                    b.HasOne("DevWeb.Api.Models.Artista", "Artista")
+                        .WithMany("Obras")
+                        .HasForeignKey("ArtistaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DevWeb.Api.Models.Categoria", "Categoria")
                         .WithMany("Obras")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("DevWeb.Api.Models.Galeria", "Galeria")
+                        .WithMany("Obras")
+                        .HasForeignKey("GaleriaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Artista");
+
                     b.Navigation("Categoria");
+
+                    b.Navigation("Galeria");
+                });
+
+            modelBuilder.Entity("DevWeb.Api.Models.Artista", b =>
+                {
+                    b.Navigation("Obras");
                 });
 
             modelBuilder.Entity("DevWeb.Api.Models.Categoria", b =>
+                {
+                    b.Navigation("Obras");
+                });
+
+            modelBuilder.Entity("DevWeb.Api.Models.Galeria", b =>
                 {
                     b.Navigation("Obras");
                 });
