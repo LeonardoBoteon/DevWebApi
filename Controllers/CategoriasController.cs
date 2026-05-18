@@ -71,7 +71,7 @@ public class CategoriasController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategoria(int id)
     {
         var categoria = await _context.Categorias.FindAsync(id);
